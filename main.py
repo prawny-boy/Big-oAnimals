@@ -165,12 +165,17 @@ class Button(_pygame.sprite.Sprite):
 
 # Functions
 # Pygame
-def draw_text(text, x, y, colour=BLACK, font=TEXT_FONT, line_spacing=5, surface=WINDOW):
+def draw_text(text, x, y, colour=BLACK, font=TEXT_FONT, line_spacing=5, surface=WINDOW, align="c"):
     lines = text.split("\n")
     for line in lines:
         text_surface = font.render(line, True, colour[:3])
         text_surface.set_alpha(colour[3] if len(colour) > 3 else 255)
-        text_rect = text_surface.get_rect(topleft=(x, y))
+        if align == "c":
+            text_rect = text_surface.get_rect(center=(x, y))
+        elif align == "r":
+            text_rect = text_surface.get_rect(topright=(x, y))
+        else:
+            text_rect = text_surface.get_rect(topleft=(x, y))
         surface.blit(text_surface, text_rect)
         y += text_surface.get_height() + line_spacing
 
