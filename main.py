@@ -144,7 +144,8 @@ class Button(_pygame.sprite.Sprite):
         _pygame.draw.rect(self.image, self.border_colour, self.image.get_rect(), self.border_width, self.border_radius)
         # Draw the text
         text_surface = self.text_font.render(self.text, True, self.text_colour)
-        text_rect = text_surface.get_rect(topleft=(10, 3))
+        offset = (self.image.get_width()/2 - text_surface.get_width()/2, self.image.get_height()/2 - text_surface.get_height()/2)
+        text_rect = text_surface.get_rect(topleft=offset)
         self.image.blit(text_surface, text_rect)
 
         # Blit the button onto the surface
@@ -164,6 +165,15 @@ class Button(_pygame.sprite.Sprite):
 
 # Functions
 # Pygame
+def draw_text(text, x, y, colour=BLACK, font=TEXT_FONT, line_spacing=5, surface=WINDOW):
+    lines = text.split("\n")
+    for line in lines:
+        text_surface = font.render(line, True, colour[:3])
+        text_surface.set_alpha(colour[3] if len(colour) > 3 else 255)
+        text_rect = text_surface.get_rect(topleft=(x, y))
+        surface.blit(text_surface, text_rect)
+        y += text_surface.get_height() + line_spacing
+
 # Normal
 def save(user, stats:dict):
     pass
@@ -204,7 +214,7 @@ while True:
     # Game Screens
     if current_screen == "User Page":
         # Draw a title
-
+        
         # Draw buttons
         example_group.update()
 
