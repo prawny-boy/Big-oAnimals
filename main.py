@@ -104,7 +104,8 @@ class Button(_pygame.sprite.Sprite):
         accent_value:tuple|int = BLACK # this is the value of the accent, it can be a rgb value, size added (int) or the opacity of accented (int)
     ):
         super().__init__()
-        self.coordinates = (x, y)
+        offset = (width / 2, height / 2)
+        self.coordinates = (x - offset[0], y - offset[1])
         self.size = (width, height)
         self.colour = colour
         self.text = text
@@ -131,7 +132,7 @@ class Button(_pygame.sprite.Sprite):
             self.image = _pygame.Surface((self.size[0]*self.accent_value, self.size[1]*self.accent_value))
         else:
             self.image = _pygame.Surface(self.size)
-        self.rect = self.image.get_rect(topleft = self.coordinates)
+        self.rect = self.image.get_rect(topleft = (self.coordinates))
         self.surface_input = _pygame.display.get_surface()
         # Draw the fill on the button
         if self.accent_type == "colour" and hover:
@@ -193,14 +194,14 @@ def back(current_screen):
 
 # Sprite Groups for buttons
 # Example
-example_group = _pygame.sprite.Group()
-button_1 = Button(100, 100, 100, 100, "test1", "example screen")
-button_2 = Button(200, 200, 100, 100, "test2", "example screen")
-button_3 = Button(300, 300, 100, 100, "test3", "example screen", accent_type="size", accent_value=1.5)
-button_4 = Button(400, 400, 100, 100, "test4", "example screen", accent_type="opacity", accent_value=128)
-example_group.add(button_1, button_2, button_3, button_4)
+welcome_page_buttons = _pygame.sprite.Group()
+login_button = Button(400, 200, 400, 100, "Login", "Login Page")
+signup_button = Button(400, 310, 400, 100, "Signup", "Signup Page")
+anonymous_button = Button(400, 420, 400, 100, "Stay Anonymous", "Home")
+test_button = Button(400, 530, 400, 100, "Test (Admin)", "Home")
+welcome_page_buttons.add(login_button, signup_button, anonymous_button, test_button)
 
-current_screen = "User Page"
+current_screen = "Welcome Page"
 
 while True:
     clock.tick(FPS)
@@ -217,17 +218,18 @@ while True:
                 back(current_screen)
     
     # Game Screens
-    if current_screen == "User Page":
+    if current_screen == "Welcome Page":
         # Draw a title
-        
+        draw_text("Big-o Animals", 400, 50, YELLOW, HEADING_FONT)
+        draw_text("By Sean Chan", 400, 100, YELLOW, SUBTITLE_FONT)
+        draw_text("Made using Pygame and VSC", 400, 130, YELLOW, TEXT_FONT)
         # Draw buttons
-        example_group.update()
+        welcome_page_buttons.update()
 
         # Change screen if a button is clicked
         button:Button
-        for button in example_group:
+        for button in welcome_page_buttons:
             if button.check_click():
                 current_screen = button.direct_to
-                print(current_screen)
     
     _pygame.display.update()
