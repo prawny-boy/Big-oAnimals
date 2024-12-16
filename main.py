@@ -88,33 +88,65 @@ TEXT_FONT = _pygame.font.Font(convertFileName("Fonts\\PixeloidMono.ttf"), 20)
 class Button(_pygame.sprite.Sprite):
     def __init__(
         self,
-        x,
-        y, 
-        width, 
-        height,
-        direct_to, 
-        colour = WHITE, 
-        border_colour = BLACK, 
-        border_width = 5, # this is thickness of the border
-        border_radius = 10 # this is curving of edges
+        x:int,
+        y:int, 
+        width:int, 
+        height:int,
+        text:str,
+        direct_to:str, 
+        colour:tuple = WHITE, 
+        border_colour:tuple = BLACK,
+        text_colour:tuple = BLACK,
+        text_font:_pygame.font.Font = TEXT_FONT,
+        border_width:int = 5, # this is thickness of the border
+        border_radius:int = -1, # this is curving of edges
+        accent_type:str = "colour", # 3 modes, colour, size and opacity
+        accent_value:tuple|int = BLACK # this is the value of the accent, it can be a rgb value, size added (int) or the opacity of accented (int)
     ):
         super().__init__()
         self.coordinates = (x, y)
         self.size = (width, height)
         self.colour = colour
+        self.text = text
+        self.text_colour = text_colour
+        self.text_font = text_font
         self.border_colour = border_colour
         self.border_width = border_width
         self.border_radius = border_radius
-        self.image = _pygame.Surface(self.size)
+        self.direct_to = direct_to
+        self.accent_type = accent_type
+        self.accent_value = accent_value
+    
+    def check_hover(self):
+        mouse_pos = _pygame.mouse.get_pos()
+        button_rect = _pygame.rect.Rect(self.coordinates, self.size)
+        if button_rect.collidepoint(mouse_pos):
+            return True
+        else:
+            return False
+
+    def draw(self):
+        hover = self.check_hover()
+        if self.accent_type == "size" and hover:
+            self.image = _pygame.Surface((self.size[0]*self.accent_value, self.size[1]*self.accent_value))
+        else:
+            self.image = _pygame.Surface(self.size)
         self.rect = self.image.get_rect(topleft = self.coordinates)
         self.surface_input = _pygame.display.get_surface()
-        self.direct_to = direct_to
-    
-    def draw(self):
-        # Draw the button 
-        self.image.fill(self.colour)
+        # Draw the fill on the button
+        if self.accent_type == "colour" and hover:
+            _pygame.draw.rect(self.image, self.accent_value, self.image.get_rect())
+        elif self.accent_type == "opacity" and hover: # no work :(
+            _pygame.draw.rect(self.image, (self.colour[0], self.colour[1], self.colour[2], self.accent_value), self.image.get_rect())
+        else:
+            _pygame.draw.rect(self.image, self.colour, self.image.get_rect())
         # Draw the border
-        _pygame.draw.rect(self.image, self.border_colour, self.rect, self.border_width, self.border_radius)
+        _pygame.draw.rect(self.image, self.border_colour, self.image.get_rect(), self.border_width, self.border_radius)
+        # Draw the text
+        text_surface = self.text_font.render(self.text, True, self.text_colour)
+        text_rect = text_surface.get_rect(topleft=(10, 3))
+        self.image.blit(text_surface, text_rect)
+
         # Blit the button onto the surface
         self.surface_input.blit(self.image, self.rect)
     
@@ -131,6 +163,8 @@ class Button(_pygame.sprite.Sprite):
         self.draw()
 
 # Functions
+# Pygame
+# Normal
 def save(user, stats:dict):
     pass
 
@@ -145,14 +179,17 @@ def back(current_screen):
 # Sprite Groups for buttons
 # Example
 example_group = _pygame.sprite.Group()
-button_1 = Button(100, 100, 100, 100, "example screen")
-button_2 = Button(200, 200, 100, 100, "example screen")
-example_group.add(button_1, button_2)
+button_1 = Button(100, 100, 100, 100, "test1", "example screen")
+button_2 = Button(200, 200, 100, 100, "test2", "example screen")
+button_3 = Button(300, 300, 100, 100, "test3", "example screen", accent_type="size", accent_value=1.5)
+button_4 = Button(400, 400, 100, 100, "test4", "example screen", accent_type="opacity", accent_value=128)
+example_group.add(button_1, button_2, button_3, button_4)
 
 current_screen = "User Page"
 
 while True:
-    WINDOW.fill(BLACK)
+    clock.tick(FPS)
+    WINDOW.fill(GREEN)
 
     for event in _pygame.event.get():
         if event.type == _pygame.QUIT:
@@ -177,6 +214,5 @@ while True:
             if button.check_click():
                 current_screen = button.direct_to
                 print(current_screen)
-
+    
     _pygame.display.update()
-    clock.tick(FPS)
