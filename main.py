@@ -208,7 +208,10 @@ def load(user):
     pass
 
 def back(current_screen):
-    pass
+    if current_screen in ["Login Page", "Signup Page", "Test Page", "Welcome Page"]:
+        return "Welcome Page"
+    else:
+        return "Home Page"
 
 # Main Loop ---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -244,7 +247,7 @@ while True:
         elif event.type == _pygame.KEYDOWN:
             key_pressed = _pygame.key.get_pressed()
             if key_pressed[_pygame.K_ESCAPE]:
-                back(current_screen)
+                current_screen = back(current_screen)
     
     # Game Screens
     if current_screen == "Welcome Page":
