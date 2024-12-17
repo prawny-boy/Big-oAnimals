@@ -95,13 +95,13 @@ class Button(_pygame.sprite.Sprite):
         text:str,
         direct_to:str, 
         colour:tuple = WHITE, 
-        border_colour:tuple = BLACK,
+        border_colour:tuple = YELLOW,
         text_colour:tuple = BLACK,
         text_font:_pygame.font.Font = TEXT_FONT,
         border_width:int = 5, # this is thickness of the border
         border_radius:int = -1, # this is curving of edges
         accent_type:str = "colour", # 3 modes, colour, size and opacity
-        accent_value:tuple|int = BLACK # this is the value of the accent, it can be a rgb value, size added (int) or the opacity of accented (int)
+        accent_value:tuple|int = GREEN # this is the value of the accent, it can be a rgb value, size added (int) or the opacity of accented (int)
     ):
         super().__init__()
         offset = (width / 2, height / 2)
@@ -211,7 +211,7 @@ def back(current_screen):
     if current_screen in ["Login Page", "Signup Page", "Test Page", "Welcome Page"]:
         return "Welcome Page"
     else:
-        return "Home Page"
+        return "Home"
 
 # Main Loop ---------------------------------------------------------------------------------------------------------------------------------------
 
