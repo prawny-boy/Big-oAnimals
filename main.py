@@ -232,6 +232,8 @@ welcome_page.add(login_button, signup_button, anonymous_button, test_button)
 
 # Login Page
 login_page = _pygame.sprite.Group()
+login_submit_button = Button(400, 420, 400, 100, "Login", "Home")
+login_page.add(login_submit_button)
 
 current_screen = "Welcome Page"
 
@@ -272,5 +274,14 @@ while True:
             if button.check_click():
                 if button.direct_to == "Back":
                     current_screen = "Welcome Page"
+    
+    if current_screen == "Login Page":
+        draw_text("Big-o Animals", 400, 50, YELLOW, HEADING_FONT)
+        draw_text("Login to your account", 400, 100, YELLOW, SUBTITLE_FONT)
+
+        login_page.update()
+        navigation_buttons.update()
+
+        current_screen = manage_buttons([login_page, navigation_buttons], current_screen, True, "Welcome Page")
     
     _pygame.display.update()
