@@ -180,6 +180,26 @@ def draw_text(text, x, y, colour=BLACK, font=TEXT_FONT, line_spacing=5, surface=
         surface.blit(text_surface, text_rect)
         y += text_surface.get_height() + line_spacing
 
+def manage_buttons(sprite_groups:list[_pygame.sprite.Group]|_pygame.sprite.Group, current_screen, navigation=False, back_to=None, next_to=None):
+    if type(sprite_groups) == _pygame.sprite.Group:
+        temp = []
+        temp.append(sprite_groups)
+        sprite_groups = temp
+    for sprite_group in sprite_groups:
+        button:Button
+        for button in sprite_group:
+            if button.check_click():
+                if navigation:
+                    if button.direct_to == "Back":
+                        if back_to != None: return back_to
+                    elif button.direct_to == "Next":
+                        if next_to != None: return next_to
+                    else:
+                        return button.direct_to
+                else:
+                    return button.direct_to
+    return current_screen
+
 # Normal
 def save(user, stats:dict):
     pass
@@ -193,13 +213,22 @@ def back(current_screen):
 # Main Loop ---------------------------------------------------------------------------------------------------------------------------------------
 
 # Sprite Groups for buttons
-# Example
-welcome_page_buttons = _pygame.sprite.Group()
+# Navigation Buttons
+navigation_buttons = _pygame.sprite.Group()
+back_button = Button(65, 570, 90, 45, "Back", "Back", border_width=3)
+next_button = Button(735, 570, 90, 45, "Next", "Next", border_width=3)
+navigation_buttons.add(back_button, next_button)
+
+# Welcome Page
+welcome_page = _pygame.sprite.Group()
 login_button = Button(400, 200, 400, 100, "Login", "Login Page")
 signup_button = Button(400, 310, 400, 100, "Signup", "Signup Page")
 anonymous_button = Button(400, 420, 400, 100, "Stay Anonymous", "Home")
-test_button = Button(400, 530, 400, 100, "Test (Admin)", "Home")
-welcome_page_buttons.add(login_button, signup_button, anonymous_button, test_button)
+test_button = Button(400, 530, 400, 100, "Test (Admin)", "Test Page")
+welcome_page.add(login_button, signup_button, anonymous_button, test_button)
+
+# Login Page
+login_page = _pygame.sprite.Group()
 
 current_screen = "Welcome Page"
 
@@ -224,12 +253,21 @@ while True:
         draw_text("By Sean Chan", 400, 100, YELLOW, SUBTITLE_FONT)
         draw_text("Made using Pygame and VSC", 400, 130, YELLOW, TEXT_FONT)
         # Draw buttons
-        welcome_page_buttons.update()
+        welcome_page.update()
 
         # Change screen if a button is clicked
+        current_screen = manage_buttons(welcome_page, current_screen)
+
+    if current_screen == "Test Page":
+        draw_text(f"Mouse pos: {_pygame.mouse.get_pos()}", 400, 300)
+
+        navigation_buttons.update()
+
+        current_screen = manage_buttons(navigation_buttons, current_screen, True, "Welcome Page")
         button:Button
-        for button in welcome_page_buttons:
+        for button in navigation_buttons:
             if button.check_click():
-                current_screen = button.direct_to
+                if button.direct_to == "Back":
+                    current_screen = "Welcome Page"
     
     _pygame.display.update()
