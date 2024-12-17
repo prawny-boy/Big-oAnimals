@@ -235,6 +235,11 @@ login_page = _pygame.sprite.Group()
 login_submit_button = Button(400, 420, 400, 100, "Login", "Home")
 login_page.add(login_submit_button)
 
+# Signup Page
+signup_page = _pygame.sprite.Group()
+signup_submit_button = Button(400, 420, 400, 100, "Submit", "Home")
+signup_page.add(signup_submit_button)
+
 current_screen = "Welcome Page"
 
 while True:
@@ -283,5 +288,14 @@ while True:
         navigation_buttons.update()
 
         current_screen = manage_buttons([login_page, navigation_buttons], current_screen, True, "Welcome Page")
+
+    if current_screen == "Signup Page":
+        draw_text("Big-o Animals", 400, 50, YELLOW, HEADING_FONT)
+        draw_text("Signup to save your progress", 400, 100, YELLOW, SUBTITLE_FONT)
+
+        signup_page.update()
+        navigation_buttons.update()
+
+        current_screen = manage_buttons([signup_page, navigation_buttons], current_screen, True, "Welcome Page")
     
     _pygame.display.update()
