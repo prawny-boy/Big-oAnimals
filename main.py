@@ -21,6 +21,7 @@ Coding Conventions:
 """
 
 import pygame as _pygame
+import pygame_gui as _pygame_gui
 from sys import exit as _exit
 from os import getcwd as _getcwd
 import random as _random
@@ -61,9 +62,12 @@ user = ""
 # Initializations
 # Pygame Screen
 _pygame.init()
-clock = _pygame.time.Clock()
+
 WINDOW = _pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 _pygame.display.set_caption("Big-oAnimals")
+
+CLOCK = _pygame.time.Clock()
+MANAGER = _pygame_gui.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Others
 _pygame.font.init()
@@ -200,11 +204,30 @@ def manage_buttons(sprite_groups:list[_pygame.sprite.Group]|_pygame.sprite.Group
                     return button.direct_to
     return current_screen
 
+def manage_text_entry(current_screen, direct_to):
+    entered_text = ""
+    for event in _pygame.event.get():
+        if event.type == _pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "#username_entry":
+            entered_text = event.text
+
+    # add checks for invalid usernames etc
+    if entered_text != "":
+        load(entered_text)
+        print("User loaded: "+entered_text)
+        current_screen = direct_to
+        return current_screen
+    else:
+        current_screen = current_screen
+        return current_screen
+
 # Normal
 def save(user, stats:dict):
     pass
 
 def load(user):
+    pass
+
+def addUser(user):
     pass
 
 def back(current_screen):
@@ -240,10 +263,13 @@ signup_page = _pygame.sprite.Group()
 signup_submit_button = Button(400, 420, 400, 100, "Submit", "Home")
 signup_page.add(signup_submit_button)
 
+# Textbox
+textbox = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 250, 400, 40), manager=MANAGER, object_id="#username_entry")
+
 current_screen = "Welcome Page"
 
 while True:
-    clock.tick(FPS)
+    delta_time = CLOCK.tick(FPS)/1000
     WINDOW.fill(GREEN)
 
     for event in _pygame.event.get():
@@ -255,6 +281,8 @@ while True:
             key_pressed = _pygame.key.get_pressed()
             if key_pressed[_pygame.K_ESCAPE]:
                 current_screen = back(current_screen)
+        
+        MANAGER.process_events(event)
     
     # Game Screens
     if current_screen == "Welcome Page":
@@ -284,18 +312,25 @@ while True:
         draw_text("Big-o Animals", 400, 50, YELLOW, HEADING_FONT)
         draw_text("Login to your account", 400, 100, YELLOW, SUBTITLE_FONT)
 
+        MANAGER.update(delta_time)
+        MANAGER.draw_ui(WINDOW)
         login_page.update()
         navigation_buttons.update()
-
+        
+        current_screen = manage_text_entry(current_screen, "Home")
         current_screen = manage_buttons([login_page, navigation_buttons], current_screen, True, "Welcome Page")
 
     if current_screen == "Signup Page":
         draw_text("Big-o Animals", 400, 50, YELLOW, HEADING_FONT)
         draw_text("Signup to save your progress", 400, 100, YELLOW, SUBTITLE_FONT)
 
+        MANAGER.update(delta_time)
+        MANAGER.draw_ui(WINDOW)
         signup_page.update()
         navigation_buttons.update()
 
+        current_screen = manage_text_entry(current_screen, "Home")
         current_screen = manage_buttons([signup_page, navigation_buttons], current_screen, True, "Welcome Page")
     
+
     _pygame.display.update()
