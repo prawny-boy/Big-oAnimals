@@ -53,11 +53,35 @@ def convertFileName(filepath:str): # use windows filepath
 # Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-SAVE_FILE = "save.txt"
+SAVE_FILE = "stats.txt"
 FPS = 60
 
 # Variables
 user = ""
+"""
+    Users are saved in this format:
+    Username|Password|value1,value2,value3...
+
+    Split by '|' to find Username and Password
+    3rd item from split is the save data, split by ','
+    '|', '\\' and ',' are banned characters in username/password
+    Within the save data there might be some lists, so split by '\\' (Single backslash)
+    E.g. ExampleUser|12345|100,1\\100,5...
+
+    Data for saving (add more as game grows):
+        Total Money
+        Level of Player (Main Level/Exp)
+        Campaign Stage Achieved
+        Upgrades/Items (Type: Amount/Power)
+        Animals (Animal Type: Level, Damage, Health, Speed etc.)
+
+        Others:
+            Time Since Last Animal Catch
+            Last Time Played (Daily rewards?)
+        
+"""
+save_data = {
+}
 
 # Initializations
 # Pygame Screen
