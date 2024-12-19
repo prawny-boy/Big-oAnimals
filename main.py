@@ -263,8 +263,10 @@ signup_page = _pygame.sprite.Group()
 signup_submit_button = Button(400, 420, 400, 100, "Submit", "Home")
 signup_page.add(signup_submit_button)
 
-# Textbox
-textbox = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 250, 400, 40), manager=MANAGER, object_id="#username_entry")
+# Username/Password Entry
+username_entry = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 210, 400, 40), manager=MANAGER, object_id="#username_entry")
+password_entry = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 260, 400, 40), manager=MANAGER, object_id="#password_entry")
+password_entry.set_text_hidden(True)
 
 current_screen = "Welcome Page"
 
@@ -320,6 +322,13 @@ while True:
         current_screen = manage_text_entry(current_screen, "Home")
         current_screen = manage_buttons([login_page, navigation_buttons], current_screen, True, "Welcome Page")
 
+        if current_screen == "Home":
+            # do tests etc
+            username = username_entry.get_text()
+            password = password_entry.get_text()
+            load(username)
+            print("User saved: "+username, password)
+
     if current_screen == "Signup Page":
         draw_text("Big-o Animals", 400, 50, YELLOW, HEADING_FONT)
         draw_text("Signup to save your progress", 400, 100, YELLOW, SUBTITLE_FONT)
@@ -329,8 +338,14 @@ while True:
         signup_page.update()
         navigation_buttons.update()
 
-        current_screen = manage_text_entry(current_screen, "Home")
         current_screen = manage_buttons([signup_page, navigation_buttons], current_screen, True, "Welcome Page")
+        
+        if current_screen == "Home":
+            # do tests etc
+            username = username_entry.get_text()
+            password = password_entry.get_text()
+            addUser(username)
+            print("User saved: "+username, password)
     
 
     _pygame.display.update()
