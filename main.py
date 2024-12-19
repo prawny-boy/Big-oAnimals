@@ -204,22 +204,6 @@ def manage_buttons(sprite_groups:list[_pygame.sprite.Group]|_pygame.sprite.Group
                     return button.direct_to
     return current_screen
 
-def manage_text_entry(current_screen, direct_to):
-    entered_text = ""
-    for event in _pygame.event.get():
-        if event.type == _pygame_gui.UI_TEXT_ENTRY_FINISHED and event.ui_object_id == "#username_entry":
-            entered_text = event.text
-
-    # add checks for invalid usernames etc
-    if entered_text != "":
-        load(entered_text)
-        print("User loaded: "+entered_text)
-        current_screen = direct_to
-        return current_screen
-    else:
-        current_screen = current_screen
-        return current_screen
-
 # Normal
 def save(user, stats:dict):
     pass
@@ -339,7 +323,7 @@ while True:
         navigation_buttons.update()
 
         current_screen = manage_buttons([signup_page, navigation_buttons], current_screen, True, "Welcome Page")
-        
+
         if current_screen == "Home":
             # do tests etc
             username = username_entry.get_text()
