@@ -67,7 +67,6 @@ WINDOW = _pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 _pygame.display.set_caption("Big-oAnimals")
 
 CLOCK = _pygame.time.Clock()
-MANAGER = _pygame_gui.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Others
 _pygame.font.init()
@@ -248,8 +247,9 @@ signup_submit_button = Button(400, 420, 400, 100, "Submit", "Home")
 signup_page.add(signup_submit_button)
 
 # Username/Password Entry
-username_entry = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 210, 400, 40), manager=MANAGER, object_id="#username_entry")
-password_entry = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 260, 400, 40), manager=MANAGER, object_id="#password_entry")
+account_manager = _pygame_gui.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT))
+username_entry = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 210, 400, 40), manager=account_manager, object_id="#username_entry")
+password_entry = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 260, 400, 40), manager=account_manager, object_id="#password_entry")
 password_entry.set_text_hidden(True)
 
 current_screen = "Welcome Page"
@@ -268,7 +268,8 @@ while True:
             if key_pressed[_pygame.K_ESCAPE]:
                 current_screen = back(current_screen)
         
-        MANAGER.process_events(event)
+        # Managers processing inputs
+        account_manager.process_events(event)
     
     # Game Screens
     if current_screen == "Welcome Page":
@@ -298,12 +299,11 @@ while True:
         draw_text("Big-o Animals", 400, 50, YELLOW, HEADING_FONT)
         draw_text("Login to your account", 400, 100, YELLOW, SUBTITLE_FONT)
 
-        MANAGER.update(delta_time)
-        MANAGER.draw_ui(WINDOW)
+        account_manager.update(delta_time)
+        account_manager.draw_ui(WINDOW)
         login_page.update()
         navigation_buttons.update()
         
-        current_screen = manage_text_entry(current_screen, "Home")
         current_screen = manage_buttons([login_page, navigation_buttons], current_screen, True, "Welcome Page")
 
         if current_screen == "Home":
@@ -317,8 +317,8 @@ while True:
         draw_text("Big-o Animals", 400, 50, YELLOW, HEADING_FONT)
         draw_text("Signup to save your progress", 400, 100, YELLOW, SUBTITLE_FONT)
 
-        MANAGER.update(delta_time)
-        MANAGER.draw_ui(WINDOW)
+        account_manager.update(delta_time)
+        account_manager.draw_ui(WINDOW)
         signup_page.update()
         navigation_buttons.update()
 
