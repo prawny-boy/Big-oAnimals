@@ -303,8 +303,8 @@ account_manager = _pygame_gui.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT))
 username_entry = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 210, 400, 40), manager=account_manager, object_id="#username_entry")
 password_entry = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 260, 400, 40), manager=account_manager, object_id="#password_entry")
 password_entry.set_text_hidden(True)
-password_entry.set_forbidden_characters(['|', '\\', ','])
-username_entry.set_forbidden_characters(['|', '\\', ','])
+password_entry.set_forbidden_characters(['|', '\\', ',', ' '])
+username_entry.set_forbidden_characters(['|', '\\', ',', ' '])
 
 # Alerts Sprite Group
 alerts = _pygame.sprite.Group()
