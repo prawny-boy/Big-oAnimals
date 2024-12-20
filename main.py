@@ -191,6 +191,30 @@ class Button(_pygame.sprite.Sprite):
     def update(self):
         self.draw()
 
+class Alert(_pygame.sprite.Sprite):
+    def __init__(self, text:str, x:int, y:int, colour:tuple = RED, font:_pygame.font.Font = TEXT_FONT):
+        super().__init__()
+        self.text = text
+        self.coordinates = (x, y)
+        self.colour = colour
+        self.font = font
+        self.alpha = 255
+    
+    def draw(self):
+        text_surface = self.font.render(self.text, True, self.colour)
+        text_rect = text_surface.get_rect(center = self.coordinates)
+        text_surface.set_alpha(self.alpha)
+        WINDOW.blit(text_surface, text_rect)
+        self.alpha -= 5
+    
+    def update(self):
+        self.draw()
+        self.check_alpha()
+    
+    def check_alpha(self):
+        if self.alpha <= 0:
+            self.kill()
+
 # Functions
 # Pygame
 def draw_text(text, x, y, colour=BLACK, font=TEXT_FONT, line_spacing=5, surface=WINDOW, align="c"):
@@ -227,6 +251,10 @@ def manage_buttons(sprite_groups:list[_pygame.sprite.Group]|_pygame.sprite.Group
                     return button.direct_to
     return current_screen
 
+def create_alert(text:str, x:int, y:int, colour:tuple = RED, font:_pygame.font.Font = TEXT_FONT):
+    alert = Alert(text, x, y, colour, font)
+    alerts.add(alert)
+
 # Normal
 def save(user, stats:dict):
     pass
@@ -234,7 +262,7 @@ def save(user, stats:dict):
 def load(user):
     pass
 
-def addUser(user):
+def add_user(user):
     pass
 
 def back(current_screen):
@@ -275,6 +303,11 @@ account_manager = _pygame_gui.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT))
 username_entry = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 210, 400, 40), manager=account_manager, object_id="#username_entry")
 password_entry = _pygame_gui.elements.UITextEntryLine(_pygame.Rect(200, 260, 400, 40), manager=account_manager, object_id="#password_entry")
 password_entry.set_text_hidden(True)
+password_entry.set_forbidden_characters(['|', '\\', ','])
+username_entry.set_forbidden_characters(['|', '\\', ','])
+
+# Alerts Sprite Group
+alerts = _pygame.sprite.Group()
 
 current_screen = "Welcome Page"
 
@@ -352,8 +385,11 @@ while True:
             # do tests etc
             username = username_entry.get_text()
             password = password_entry.get_text()
-            addUser(username)
-            print("User saved: "+username, password)
+            add_user(username)
+            print("User added: "+username, password)
     
+    # Alerts
+    alerts.update()
 
+    # Update the display
     _pygame.display.update()
