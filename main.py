@@ -265,6 +265,9 @@ def load(user):
 def add_user(user):
     pass
 
+def get_all_users():
+    pass
+
 def back(current_screen):
     if current_screen in ["Login Page", "Signup Page", "Test Page", "Welcome Page"]:
         return "Welcome Page"
@@ -382,11 +385,34 @@ while True:
         current_screen = manage_buttons([signup_page, navigation_buttons], current_screen, True, "Welcome Page")
 
         if current_screen == "Home":
-            # do tests etc
             username = username_entry.get_text()
             password = password_entry.get_text()
+            # users = get_all_users()
+            users = ["sean"]
+
+            if username == "" or password == "":
+                create_alert("Username and Password cannot be empty.", 400, 200)
+                current_screen = "Signup Page"
+                continue
+            if username in users:
+                create_alert("Username already exists in database", 400, 200)
+                current_screen = "Signup Page"
+                continue
+            if len(password) < 4:
+                create_alert("Password must be at least 4 characters long.", 400, 200)
+                current_screen = "Signup Page"
+                continue
+            if len(username) < 4 or len(username) > 20:
+                create_alert("Username must be between 4 and 20 characters long.", 400, 200)
+                current_screen = "Signup Page"
+                continue
+            if username == password:
+                create_alert("Username and Password cannot be the same.", 400, 200)
+                current_screen = "Signup Page"
+                continue
+
             add_user(username)
-            print("User added: "+username, password)
+            print("User added: "+username.replace(" ", "."), password)
     
     # Alerts
     alerts.update()
