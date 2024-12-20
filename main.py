@@ -265,7 +265,8 @@ def load(user):
 def add_user(user):
     pass
 
-def get_all_users():
+def get_all_details() -> dict:
+    # Returns a dictionary of all users and their passwords
     pass
 
 def back(current_screen):
@@ -367,11 +368,25 @@ while True:
         current_screen = manage_buttons([login_page, navigation_buttons], current_screen, True, "Welcome Page")
 
         if current_screen == "Home":
-            # do tests etc
             username = username_entry.get_text()
             password = password_entry.get_text()
+            details = get_all_details()
+
+            if username == "" or password == "":
+                create_alert("Username and Password cannot be empty", 400, 200)
+                current_screen = "Login Page"
+                continue
+            if username not in details.keys():
+                create_alert("Username does not exist in database", 400, 200)
+                current_screen = "Login Page"
+                continue
+            if details[username] != password:
+                create_alert("Incorrect Password", 400, 200)
+                current_screen = "Login Page"
+                continue
+
             load(username)
-            print("User saved: "+username, password)
+            print("User logged in: "+username, password)
 
     if current_screen == "Signup Page":
         draw_text("Big-o Animals", 400, 50, YELLOW, HEADING_FONT)
@@ -387,11 +402,11 @@ while True:
         if current_screen == "Home":
             username = username_entry.get_text()
             password = password_entry.get_text()
-            # users = get_all_users()
+            # users = list(get_all_details().keys())
             users = ["sean"]
 
             if username == "" or password == "":
-                create_alert("Username and Password cannot be empty.", 400, 200)
+                create_alert("Username and Password cannot be empty", 400, 200)
                 current_screen = "Signup Page"
                 continue
             if username in users:
@@ -399,15 +414,15 @@ while True:
                 current_screen = "Signup Page"
                 continue
             if len(password) < 4:
-                create_alert("Password must be at least 4 characters long.", 400, 200)
+                create_alert("Password must be at least 4 characters long", 400, 200)
                 current_screen = "Signup Page"
                 continue
             if len(username) < 4 or len(username) > 20:
-                create_alert("Username must be between 4 and 20 characters long.", 400, 200)
+                create_alert("Username must be between 4 and 20 characters long", 400, 200)
                 current_screen = "Signup Page"
                 continue
             if username == password:
-                create_alert("Username and Password cannot be the same.", 400, 200)
+                create_alert("Username and Password cannot be the same", 400, 200)
                 current_screen = "Signup Page"
                 continue
 
