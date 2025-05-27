@@ -32,6 +32,7 @@ class Game:
     def __init__(self):
         self.screen = _pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         _pygame.display.set_caption("Big-oAnimals")
+        _pygame.display.set_icon(_pygame.transform.scale(ICON, (32, 32)))
         self.clock = _pygame.time.Clock()
         self.game_canvas = _pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.running = True
@@ -43,7 +44,7 @@ class Game:
             "keys_pressed": _pygame.key.get_pressed(),
             "keys_released": []
         }
-        self.icons = [_pygame.transform.scale(GAME_ICON, (200, 200))]
+        self.icons = [_pygame.transform.scale(GAME_LOGO, (200, 200))]
 
         # Game Variables
         self.loaded_user = None
