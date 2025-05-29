@@ -80,7 +80,8 @@ class Game:
             elif event.type == _pygame.MOUSEBUTTONUP:
                 self.events["mouse_click"] = False
             elif event.type == _pygame.KEYDOWN:
-                self.events["keys_pressed"] = _pygame.key.get_pressed()
+                self.events["keys_pressed"] = _pygame.key.get_just_pressed()
+                self.events["keys_pressed"] = list(self.events["keys_pressed"])
                 print(self.events["keys_pressed"])
         self.events["mouse_pos"] = _pygame.mouse.get_pos()
 
@@ -97,6 +98,12 @@ class Game:
         self.events["mouse_click"] = False
         self.events["keys_released"] = []
         self.events["keys_pressed"] = []
+    
+    def user_exists(self, username):
+        return False
+    
+    def add_user(self, username):
+        pass
 
 if __name__ == "__main__":
     game = Game()
@@ -117,11 +124,6 @@ if __name__ == "__main__":
 # login_page = _pygame.sprite.Group()
 # login_submit_button = Button(400, 420, 400, 100, "Login", "Home")
 # login_page.add(login_submit_button)
-
-# # Signup Page
-# signup_page = _pygame.sprite.Group()
-# signup_submit_button = Button(400, 420, 400, 100, "Submit", "Home")
-# signup_page.add(signup_submit_button)
 
 # # Username/Password Entry
 # account_manager = _pygame_gui.UIManager((SCREEN_WIDTH, SCREEN_HEIGHT))

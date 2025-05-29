@@ -82,23 +82,87 @@ class Alert(_pygame.sprite.Sprite):
         self.colour = colour
         self.font = font
         self.alpha = 255
-        self.surface_input = _pygame.display.get_surface()
     
-    def draw(self):
+    def draw(self, surface):
         text_surface = self.font.render(self.text, True, self.colour)
         text_rect = text_surface.get_rect(center = self.coordinates)
         text_surface.set_alpha(self.alpha)
-        self.surface_input.blit(text_surface, text_rect)
+        surface.blit(text_surface, text_rect)
         self.alpha -= 5
     
-    def update(self):
-        self.draw()
+    def update(self, surface):
         self.check_alpha()
+        self.draw(surface)
     
     def check_alpha(self):
         if self.alpha <= 0:
             self.kill()
 
+alerts = _pygame.sprite.Group()
+def create_alert(text:str, x:int, y:int, colour:tuple = RED, font:_pygame.font.Font = TEXT_FONT):
+    alert = Alert(text, x, y, colour, font)
+    alerts.add(alert)
+
+class TextBox(_pygame.sprite.Sprite):
+    def __init__(self,
+                 prompt:str,
+                 x:int,
+                 y:int,
+                 width:int,
+                 height:int,
+                 min_characters:int = 0,
+                 max_characters:int = 0,
+                 colour:tuple = BLACK,
+                 font:_pygame.font.Font = TEXT_FONT):
+        super().__init__()
+        self.prompt = prompt
+        self.coordinates = (x, y)
+        self.dimensions = (width, height)
+        self.min_characters = min_characters
+        self.max_characters = max_characters
+        self.colour = colour
+        self.font = font
+        self.selected = False
+        self.text = ""
+    
+    def deselect(self):
+        self.selected = False
+    def select(self):
+        self.selected = True
+    
+    def get_text(self):
+        if self.min_characters > 0:
+            if len(self.text) < self.min_characters:
+                create_alert(f"Not enough characters ({self.min_characters}-{self.max_characters})", 400, 200)
+                return False
+        if self.max_characters > 0:
+            if len(self.text) > self.max_characters:
+                create_alert(f"Too many characters ({self.min_characters}-{self.max_characters})", 400, 200)
+                return False
+        return self.text
+    
+    def update(self, actions:dict):
+        mouse_pos = _pygame.mouse.get_pos()
+        # add typing
+        if actions["keys_pressed"]:
+            pass
+        if actions["mouse_click"]:
+            if self.rect.collidepoint(mouse_pos):
+                self.deselect()
+            else:
+                self.select()
+    
+    def draw(self, surface:_pygame.Surface):
+        self.rect = _pygame.rect.Rect(*self.coordinates, *self.dimensions)
+        if self.selected:
+            text_surface = self.font.render(self.text, True, self.colour)
+            text_rect = text_surface.get_rect(center = self.rect.center)
+        else:
+            text_surface = self.font.render(self.prompt, True, self.colour)
+            text_rect = text_surface.get_rect(center = self.rect.center)
+        _pygame.draw.rect(surface, self.colour, self.rect, 2)
+        surface.blit(text_surface, text_rect)
+                
 def draw_text(text, x, y, surface:_pygame.Surface, colour=BLACK, font=TEXT_FONT, line_spacing=5, align="c"):
     lines = text.split("\n")
     for line in lines:
@@ -112,8 +176,3 @@ def draw_text(text, x, y, surface:_pygame.Surface, colour=BLACK, font=TEXT_FONT,
             text_rect = text_surface.get_rect(topleft=(x, y))
         surface.blit(text_surface, text_rect)
         y += text_surface.get_height() + line_spacing
-
-alerts = _pygame.sprite.Group()
-def create_alert(text:str, x:int, y:int, colour:tuple = RED, font:_pygame.font.Font = TEXT_FONT):
-    alert = Alert(text, x, y, colour, font)
-    alerts.add(alert)
