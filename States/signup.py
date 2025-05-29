@@ -12,6 +12,8 @@ class SignupState(State):
         self.submit_button = Button(400, 420, 400, 100, "Submit")
     
     def update(self, delta_time, actions):
+        self.password_entry.update(actions, delta_time)
+        self.username_entry.update(actions, delta_time)
         if actions["mouse_click"]:
             if self.submit_button.check_hover():
                 username = self.username_entry.get_text()

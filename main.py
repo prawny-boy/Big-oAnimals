@@ -20,6 +20,7 @@ Coding Conventions:
 - Use PascalCase for class names
 """
 import pygame as _pygame
+from collections import defaultdict
 
 _pygame.init()
 _pygame.font.init()
@@ -41,8 +42,7 @@ class Game:
         self.events = {
             "mouse_pos": _pygame.mouse.get_pos(),
             "mouse_click": False,
-            "keys_pressed": _pygame.key.get_pressed(),
-            "keys_released": []
+            "keys": defaultdict()
         }
         self.icons = [_pygame.transform.scale(GAME_LOGO, (200, 200))]
 
@@ -72,6 +72,9 @@ class Game:
         self.delta_time = self.clock.tick(FPS) / 1000
     
     def get_events(self):
+        for key, time in self.events["keys"].items():
+            if time > 0:
+                self.events["keys"][key] += 1
         for event in _pygame.event.get():
             if event.type == _pygame.QUIT:
                 self.running = False
@@ -80,9 +83,9 @@ class Game:
             elif event.type == _pygame.MOUSEBUTTONUP:
                 self.events["mouse_click"] = False
             elif event.type == _pygame.KEYDOWN:
-                self.events["keys_pressed"] = _pygame.key.get_just_pressed()
-                self.events["keys_pressed"] = list(self.events["keys_pressed"])
-                print(self.events["keys_pressed"])
+                self.events["keys"][_pygame.key.name(event.key)] = 1
+            elif event.type == _pygame.KEYUP:
+                self.events["keys"][_pygame.key.name(event.key)] = 0
         self.events["mouse_pos"] = _pygame.mouse.get_pos()
 
     def update(self):
@@ -96,8 +99,7 @@ class Game:
     
     def reset_actions(self):
         self.events["mouse_click"] = False
-        self.events["keys_released"] = []
-        self.events["keys_pressed"] = []
+        self.events["keys"] = defaultdict()
     
     def user_exists(self, username):
         return False

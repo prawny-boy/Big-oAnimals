@@ -124,6 +124,9 @@ class TextBox(_pygame.sprite.Sprite):
         self.font = font
         self.selected = False
         self.text = ""
+        self.rect = _pygame.rect.Rect(*self.coordinates, *self.dimensions)
+        self.show_cursor = False
+        self.cursor_timer = 0
     
     def deselect(self):
         self.selected = False
@@ -141,26 +144,53 @@ class TextBox(_pygame.sprite.Sprite):
                 return False
         return self.text
     
-    def update(self, actions:dict):
-        mouse_pos = _pygame.mouse.get_pos()
-        # add typing
-        if actions["keys_pressed"]:
-            pass
-        if actions["mouse_click"]:
-            if self.rect.collidepoint(mouse_pos):
-                self.deselect()
+    def update(self, actions:dict, delta_time:float):
+        try:
+            if actions["keys"]["left shift"] > 0 or actions["keys"]["right shift"] > 0:
+                shift = True
             else:
-                self.select()
-    
-    def draw(self, surface:_pygame.Surface):
-        self.rect = _pygame.rect.Rect(*self.coordinates, *self.dimensions)
+                shift = False
+        except KeyError:
+            shift = False
         if self.selected:
-            text_surface = self.font.render(self.text, True, self.colour)
-            text_rect = text_surface.get_rect(center = self.rect.center)
-        else:
-            text_surface = self.font.render(self.prompt, True, self.colour)
-            text_rect = text_surface.get_rect(center = self.rect.center)
-        _pygame.draw.rect(surface, self.colour, self.rect, 2)
+            for key, time in actions["keys"].items():
+                if time == 1 or time > 50:
+                    if key == "backspace":
+                        self.text = self.text[:-1]
+                    elif key == "return" or key == "escape":
+                        self.selected = False
+                    elif key == "space":
+                        self.text += " "
+                    elif "shift" in key:
+                        pass
+                    else:
+                        self.text += key.upper() if shift else key
+        if actions["mouse_click"]:
+            if self.rect.collidepoint(actions["mouse_pos"]):
+                self.select()
+            else:
+                self.deselect()
+        
+        if self.selected:
+            self.cursor_timer += delta_time
+            if self.cursor_timer >= 0.5:  # Blinks every 0.5 seconds
+                self.show_cursor = not self.show_cursor
+                self.cursor_timer = 0
+
+    def draw(self, surface:_pygame.Surface):
+        display_text = self.prompt if self.text == "" else self.text
+        if self.selected and self.show_cursor and not self.text == "":
+            display_text += "|"
+        text_surface = self.font.render(display_text, True, self.colour)
+        text_width = text_surface.get_width()
+        max_width = self.rect.width - 10
+        while text_width > max_width and len(display_text) > 0:
+            display_text = display_text[1:]
+            text_surface = self.font.render(display_text, True, self.colour)
+            text_width = text_surface.get_width()
+        text_rect = text_surface.get_rect(left=self.rect.left + 5, top=self.rect.top + 5)
+        border_thickness = 5 if self.selected else 2
+        _pygame.draw.rect(surface, self.colour, self.rect, border_thickness)
         surface.blit(text_surface, text_rect)
                 
 def draw_text(text, x, y, surface:_pygame.Surface, colour=BLACK, font=TEXT_FONT, line_spacing=5, align="c"):
