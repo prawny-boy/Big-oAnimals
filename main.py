@@ -104,7 +104,10 @@ class Game:
     def user_exists(self, username):
         return False
     
-    def add_user(self, username):
+    def signup_user(self, username):
+        pass
+
+    def login_user(self, username):
         pass
 
 if __name__ == "__main__":
