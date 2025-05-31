@@ -31,7 +31,8 @@ class SignupState(State):
                 elif self.game.user_exists(username):
                     create_alert("Username already exists in database", 400, 200)
                 else:
-                    self.game.signup_user(username)
+                    print("Signup successful")
+                    self.game.signup_user(username, password)
                     HomeState(self.game).enter_state()
             elif self.buttons["back"].check_hover():
                 self.exit_state()

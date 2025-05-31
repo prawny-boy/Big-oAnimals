@@ -26,11 +26,12 @@ class LoginState(State):
                 password = self.password_entry.get_text()
                 if not password:
                     return
-                elif username == password:
-                    create_alert("Username and Password cannot be the same", 400, 200)
-                else:
-                    self.game.login_user(username)
-                    HomeState(self.game).enter_state()
+                if self.game.user_exists(username):
+                    if self.game.get_user_password(username) == password:
+                        self.game.login_user(username)
+                        HomeState(self.game).enter_state()
+                    else:
+                        create_alert("Incorrect Password", 400, 200)
             elif self.buttons["back"].check_hover():
                 self.exit_state()
     

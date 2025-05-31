@@ -3,7 +3,7 @@ import pygame as _pygame
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-SAVE_FILE = "stats.txt"
+SAVE_FILE = "user_stats.txt"
 FPS = 60
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -16,3 +16,15 @@ SUBTITLE_FONT = _pygame.font.Font(convertFileName("Assets\\Fonts\\PixeloidMono.t
 TEXT_FONT = _pygame.font.Font(convertFileName("Assets\\Fonts\\PixeloidMono.ttf"), 20)
 GAME_LOGO = _pygame.image.load(convertFileName("Assets\\Sprites\\logo.png"))
 ICON = _pygame.image.load(convertFileName("Assets\\Sprites\\icon.png"))
+
+DEFAULT_USER = {
+    "User Variables": {
+        "Password": "",
+        "Total Money": 0,
+        "Player Experience": 0,
+        "Campaign Stage Achieved": 0
+    },
+    "Items": {},
+    "Upgrades": {},
+    "Animals": {}
+}
