@@ -11,13 +11,13 @@ class Button(_pygame.sprite.Sprite):
         text:str,
         disabled:bool = False,
         colour:tuple = WHITE, 
-        border_colour:tuple = YELLOW,
+        border_colour:tuple = BLACK,
         text_colour:tuple = BLACK,
         text_font:_pygame.font.Font = TEXT_FONT,
         border_width:int = 5, # this is thickness of the border
         border_radius:int = -1, # this is curving of edges
-        accent_type:str = "colour", # 3 modes, colour, size and opacity
-        accent_value:tuple|int = GREEN # this is the value of the accent, it can be a rgb value, size added (int) or the opacity of accented (int)
+        accent_type:str = "size", # 3 modes, colour, size and opacity
+        accent_value:tuple|int = (1.2, 1.2) # this is the value of the accent, it can be a rgb value, size added (int) or the opacity of accented (int)
     ):
         super().__init__()
         offset = (width / 2, height / 2)
@@ -42,37 +42,34 @@ class Button(_pygame.sprite.Sprite):
         else:
             return False
 
-    def draw(self, surface:_pygame.Surface):
+    def draw(self, surface: _pygame.Surface):
         hover = self.check_hover()
-        if self.accent_type == "size" and hover:
-            self.image = _pygame.Surface((self.size[0]*self.accent_value, self.size[1]*self.accent_value))
-        else:
-            self.image = _pygame.Surface(self.size)
         if self.disabled:
-            self.image.set_alpha(128)  # Set transparency for disabled buttons
-            hover = False  # Disable hover effect for disabled buttons
-        self.rect = self.image.get_rect(topleft = (self.coordinates))
-        # Draw the fill on the button
+            hover = False
+        if self.accent_type == "size" and hover:
+            size = (self.size[0] * self.accent_value[0], self.size[1] * self.accent_value[1])
+        else:
+            size = self.size
+        self.image = _pygame.Surface(size)
+        if self.disabled:
+            self.image.set_alpha(128)
+        if self.accent_type == "size" and hover:
+            self.rect = self.image.get_rect(topleft=(self.coordinates[0]+(self.size[0]-size[0])/2, self.coordinates[1]+(self.size[1]-size[1])/2))
+        else:
+            self.rect = self.image.get_rect(topleft=self.coordinates)
         if self.accent_type == "colour" and hover:
             _pygame.draw.rect(self.image, self.accent_value, self.image.get_rect())
-        elif self.accent_type == "opacity" and hover: # no work :(
+        elif self.accent_type == "opacity" and hover:  # no work :(
             _pygame.draw.rect(self.image, (self.colour[0], self.colour[1], self.colour[2], self.accent_value), self.image.get_rect())
         else:
             _pygame.draw.rect(self.image, self.colour, self.image.get_rect())
-        # Draw the border
         _pygame.draw.rect(self.image, self.border_colour, self.image.get_rect(), self.border_width, self.border_radius)
-        # Draw the text
         text_surface = self.text_font.render(self.text, True, self.text_colour)
-        offset = (self.image.get_width()/2 - text_surface.get_width()/2, self.image.get_height()/2 - text_surface.get_height()/2)
+        offset = (self.image.get_width() / 2 - text_surface.get_width() / 2, self.image.get_height() / 2 - text_surface.get_height() / 2)
         text_rect = text_surface.get_rect(topleft=offset)
         self.image.blit(text_surface, text_rect)
-
         # Blit the button onto the surface
         surface.blit(self.image, self.rect)
-    
-    def is_hovered(self):
-        mouse_pos = _pygame.mouse.get_pos()
-        return self.rect.collidepoint(mouse_pos)
 
 class Alert(_pygame.sprite.Sprite):
     def __init__(self, text:str, x:int, y:int, colour:tuple = RED, font:_pygame.font.Font = TEXT_FONT):

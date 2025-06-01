@@ -19,8 +19,8 @@ class TestState(State):
         self.mouse_pos = actions["mouse_pos"]
     
     def render(self, surface):
-        surface.fill(GREEN)
-        draw_text("Test Page", 400, 50, surface, YELLOW, HEADING_FONT)
-        draw_text(f"Mouse pos: {self.mouse_pos}", 400, 300, surface, YELLOW, TEXT_FONT)
+        surface.fill(WHITE)
+        draw_text("Test Page", 400, 50, surface, BLACK, HEADING_FONT)
+        draw_text(f"Mouse pos: {self.mouse_pos}", 400, 300, surface, BLACK, TEXT_FONT)
         for button in self.buttons.values():
             button.draw(surface)

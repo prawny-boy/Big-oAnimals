@@ -13,6 +13,8 @@ class State():
         if len(self.game.state_stack) > 1:
             self.prev_state = self.game.state_stack[-1]
         self.game.state_stack.append(self)
+        self.game.reset_actions()
 
     def exit_state(self):
         self.game.state_stack.pop()
+        self.game.reset_actions()

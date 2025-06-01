@@ -118,6 +118,11 @@ class Game:
     def login_user(self, username):
         self.loaded_user = username
         self.user_stats = self.stats.group_content(username)
+    
+    def signout_user(self):
+        self.stats.save()
+        self.loaded_user = None
+        self.user_stats = {}
 
 if __name__ == "__main__":
     game = Game()

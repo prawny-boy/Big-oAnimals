@@ -7,12 +7,12 @@ from constants import *
 class LoginState(State):
     def __init__(self, game):
         super().__init__(game)
-        self.username_entry = TextBox("Username", 200, 210, 400, 40, 4, 20, colour=YELLOW)
-        self.password_entry = TextBox("Password", 200, 260, 400, 40, 4, 20, colour=YELLOW)
+        self.username_entry = TextBox("Username", 200, 210, 400, 40, 4, 20, colour=BLACK)
+        self.password_entry = TextBox("Password", 200, 260, 400, 40, 4, 20, colour=BLACK)
         self.buttons = {
             "back": Button(65, 570, 90, 45, "Back", border_width=3),
             "next": Button(735, 570, 90, 45, "Next", True, border_width=3),
-            "submit": Button(400, 420, 400, 100, "Submit")
+            "submit": Button(400, 420, 200, 50, "Submit")
         }
 
     def update(self, delta_time, actions):
@@ -36,10 +36,10 @@ class LoginState(State):
                 self.exit_state()
     
     def render(self, surface):
-        surface.fill(GREEN)
+        surface.fill(WHITE)
         self.password_entry.draw(surface)
         self.username_entry.draw(surface)
         alerts.update(surface)
         for button in self.buttons.values():
             button.draw(surface)
-        draw_text("Signup Page", 400, 50, surface, YELLOW, HEADING_FONT)
+        draw_text("Signup Page", 400, 50, surface, BLACK, HEADING_FONT)
