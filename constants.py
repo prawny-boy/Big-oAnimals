@@ -15,6 +15,7 @@ HEADING_FONT = _pygame.font.Font(convertFileName("Assets\\Fonts\\PixeloidSansBol
 SUBTITLE_FONT = _pygame.font.Font(convertFileName("Assets\\Fonts\\PixeloidMono.ttf"), 30)
 TEXT_FONT = _pygame.font.Font(convertFileName("Assets\\Fonts\\PixeloidMono.ttf"), 20)
 GAME_LOGO = _pygame.image.load(convertFileName("Assets\\Sprites\\logo.png"))
+GAME_TITLE = _pygame.image.load(convertFileName("Assets\\Sprites\\title.png"))
 ICON = _pygame.image.load(convertFileName("Assets\\Sprites\\icon.png"))
 
 DEFAULT_USER = {

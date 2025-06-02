@@ -110,6 +110,7 @@ class TextBox(_pygame.sprite.Sprite):
                  min_characters:int = 0,
                  max_characters:int = 0,
                  colour:tuple = BLACK,
+                 password:bool = False,
                  font:_pygame.font.Font = TEXT_FONT):
         super().__init__()
         self.prompt = prompt
@@ -120,6 +121,7 @@ class TextBox(_pygame.sprite.Sprite):
         self.colour = colour
         self.font = font
         self.selected = False
+        self.password = password
         self.text = ""
         self.rect = _pygame.rect.Rect(*self.coordinates, *self.dimensions)
         self.show_cursor = False
@@ -175,7 +177,13 @@ class TextBox(_pygame.sprite.Sprite):
                 self.cursor_timer = 0
 
     def draw(self, surface:_pygame.Surface):
-        display_text = self.prompt if self.text == "" else self.text
+        if self.text == "":
+            display_text = self.prompt
+        else:
+            if self.password:
+                display_text = "●" * len(self.text)
+            else:
+                display_text = self.text
         if self.selected and self.show_cursor and not self.text == "":
             display_text += "|"
         text_surface = self.font.render(display_text, True, self.colour)

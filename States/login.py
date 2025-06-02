@@ -8,7 +8,7 @@ class LoginState(State):
     def __init__(self, game):
         super().__init__(game)
         self.username_entry = TextBox("Username", 200, 210, 400, 40, 4, 20, colour=BLACK)
-        self.password_entry = TextBox("Password", 200, 260, 400, 40, 4, 20, colour=BLACK)
+        self.password_entry = TextBox("Password", 200, 260, 400, 40, 4, 20, password=True, colour=BLACK)
         self.buttons = {
             "back": Button(65, 570, 90, 45, "Back", border_width=3),
             "next": Button(735, 570, 90, 45, "Next", True, border_width=3),
@@ -42,4 +42,4 @@ class LoginState(State):
         alerts.update(surface)
         for button in self.buttons.values():
             button.draw(surface)
-        draw_text("Signup Page", 400, 50, surface, BLACK, HEADING_FONT)
+        draw_text("Login Page", 400, 50, surface, BLACK, HEADING_FONT)
